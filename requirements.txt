@@ -1,0 +1,5 @@
+kagglehub==0.3.10
+opencv-python==4.11.0.86
+pillow==11.1.0
+sckit-learn==1.6.1
+tqdm==4.67.1

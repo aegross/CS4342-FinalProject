@@ -1,3 +1,7 @@
+# Ignore dataset
+source/animals10
+source/cleaned_animals_dataset
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
