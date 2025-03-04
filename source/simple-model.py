@@ -16,7 +16,7 @@ def reshape_and_bias(images):
     # # making sure the reshaping was done right by plotting test image
     # one_face = np.reshape(images_reshaped[:, 0], (48, 48))  # no bias for testing
     # fig, ax = plt.subplots(1)
-    # ax.imshow(one_face, cmap='gray')
+    # ax.imshow(one_face, cmap='viridis')  # used to do grey, viridis is nicer
     # plt.show()
 
     return fully_reshaped  # x_tilde
@@ -143,13 +143,13 @@ def softmax_regression(training_images, training_labels, epsilon, batch_size, nu
 if __name__ == "__main__":
 
     # load data (note: the image .npy files were 4D, but the last axis is redundant; components are equal)
-    training_images = np.load("cleaned_animals_dataset/train_data_images.npy") # shape: (20938, 48, 48, 3)
-    training_labels = np.load("cleaned_animals_dataset/train_data_labels.npy") # (5241, 48, 48, 3)
-    testing_images = np.load("cleaned_animals_dataset/test_data_images.npy") # (20938,)
-    testing_labels = np.load("cleaned_animals_dataset/test_data_labels.npy") # (5241,)
+    training_images = np.load("cleaned_animals_dataset/train_data_images.npy")  # shape: (20938, 48, 48, 3)
+    training_labels = np.load("cleaned_animals_dataset/train_data_labels.npy")  # (5241, 48, 48, 3)
+    testing_images = np.load("cleaned_animals_dataset/test_data_images.npy")    # (20938,)
+    testing_labels = np.load("cleaned_animals_dataset/test_data_labels.npy")    # (5241,)
 
-    # print(f"training_images shape: {training_images.shape}, training_labels shape: {training_labels.shape}")
-    # print(f"testing_images shape: {testing_images.shape}, testing_labels shape: {testing_labels.shape}")
+    print(f"training_images shape: {training_images.shape}, training_labels shape: {training_labels.shape}")
+    print(f"testing_images shape: {testing_images.shape}, testing_labels shape: {testing_labels.shape}")
 
     # append a constant 1 term to each example (columns) to correspond to the bias terms
     training_images_fixed = reshape_and_bias(training_images)
