@@ -57,7 +57,7 @@ def clean_and_standardize_images(input_dir, output_dir, image_size, image_format
                 try:
                     with Image.open(img_path) as img:
                         # Convert to grayscale (1 channel)
-                        img = img.convert("L").resize(image_size)  # "L" mode = 8-bit grayscale
+                        img = img.convert("RGB").resize(image_size)  # "L" mode = 8-bit grayscale
 
                         # Save as specified format
                         output_img_path = os.path.join(output_category_path, f"{os.path.splitext(img_name)[0]}.{image_format}")

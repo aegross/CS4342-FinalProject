@@ -1,5 +1,7 @@
 # Ignore dataset
 source/animals10
+animals10/
+cleaned_animals_dataset/
 source/cleaned_animals_dataset
 
 # Byte-compiled / optimized / DLL files
