@@ -175,3 +175,4 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+source/best_animal_cnn_model.pth

@@ -39,27 +39,6 @@ def fPC(Y, Y_hat):
     pc = num_equal / Y_hat.shape[0]
     return pc
 
-# # given image data, one-hot ground truth labels, a matrix of weight vectors (with biases), and an alpha value,
-# # calculate the (regularized) cross-entropy loss (negative log-likelihood).
-# def fCE(X_tilde, Y, W_tilde, alpha = 1e-3):
-#
-#     # save the number of samples (images) as n
-#     n = X_tilde.shape[1]
-#
-#     # make a copy of W_tilde that's the same size, but doesn't include b
-#     W = W_tilde.copy()
-#     W[len(W) - 1] = 0  # set last element in each column to 0 (ignoring b)
-#
-#     # get the softmax, Y_hat, of X_tilde and W_tilde
-#     Y_hat = softmax(X_tilde, W_tilde)
-#
-#     # calculate the CE
-#     fce = np.sum(Y * np.log(Y_hat)) * (-1.0 / n)
-#
-#     # add the L2 regularization term to regularize (if alpha = 0, it will do nothing)
-#     fce_reg = fce + ((alpha / (2 * n)) * np.sum(W * W))
-#     return fce_reg
-
 # given image data, one-hot ground truth labels, a matrix of weight vectors (with biases), and an alpha value,
 # calculate the gradient of the (regularized) cross-entropy loss for use in gradient descent.
 def grad_fCE(X_tilde, Y, W_tilde, alpha = 1e-3):
@@ -140,16 +119,48 @@ def softmax_regression(training_images, training_labels, epsilon, batch_size, nu
     # return the learned weight vector matrix
     return W_tilde
 
+def tune_hyperparameters(training_images, training_labels, testing_images, testing_labels):
+    epsilon_options = [1e-3, 1e-4, 1e-5]      # [1e-4, 1e-4, 1e-5, 1e-6]
+    batch_size_options = [32, 64, 128]        # [32, 64, 128, 256]
+    num_epochs_options = [64, 128, 256, 512]  # [64, 128, 256, 512, 1024]
+    alpha_options = [1e-2, 1e-3, 1e-4]        # [1e-2, 1e-3, 1e-4]
+
+    # store the lowest loss and the hyperparameters that it used
+    lowest_pc = np.inf
+    lowest_pc_params = ()
+
+    # loop through all combinations
+    for e in epsilon_options:
+        for b in batch_size_options:
+            for n in num_epochs_options:
+                for a in alpha_options:
+
+                    # train softmax on each set of terms, and get the pc
+                    trained_W = softmax_regression(training_images, training_labels, e, b, n, a)
+                    test_yhat = softmax(testing_images, trained_W)
+                    test_pc = fPC(testing_labels, test_yhat)
+
+                    # see if the loss is lower than the current smallest, if so, update
+                    if test_pc < lowest_pc:
+                        lowest_pc = test_pc
+                        lowest_pc_params = (e, b, n, a)
+
+                    # print each time, just for more info
+                    print(f"one set of parameters tested; pc = {test_pc} when e = {e}, b = {b}, n = {n}, a = {a}")
+
+    return lowest_pc_params
+
 if __name__ == "__main__":
 
     # load data (note: the image .npy files were 4D, but the last axis is redundant; components are equal)
-    training_images = np.load("cleaned_animals_dataset/train_data_images.npy")  # shape: (20938, 48, 48, 3)
-    training_labels = np.load("cleaned_animals_dataset/train_data_labels.npy")  # (5241, 48, 48, 3)
-    testing_images = np.load("cleaned_animals_dataset/test_data_images.npy")    # (20938,)
-    testing_labels = np.load("cleaned_animals_dataset/test_data_labels.npy")    # (5241,)
+    training_images = np.load("cleaned_animals_dataset/train_data_images.npy")     # shape: (20938, 48, 48, 3)
+    training_labels = np.load("cleaned_animals_dataset/train_data_labels.npy")     # (5241, 48, 48, 3)
+    testing_images = np.load("cleaned_animals_dataset/test_data_images.npy")       # (20938,)
+    testing_labels = np.load("cleaned_animals_dataset/test_data_labels.npy")       # (5241,)
 
     print(f"training_images shape: {training_images.shape}, training_labels shape: {training_labels.shape}")
     print(f"testing_images shape: {testing_images.shape}, testing_labels shape: {testing_labels.shape}")
+    print("Are extraneous dimensions equal? ", training_images[:,:,:,0].all() == training_images[:,:,:,1].all() == training_images[:,:,:,0].all())
 
     # append a constant 1 term to each example (columns) to correspond to the bias terms
     training_images_fixed = reshape_and_bias(training_images)
@@ -161,7 +172,8 @@ if __name__ == "__main__":
     onehot_testing_labels = np.eye(10)[testing_labels]
 
     # train the model
-    hyp = (1e-3, 64, 512, 1e-3) # epsilon, batch_size, num_epochs, alpha
+    # hyp = tune_hyperparameters(training_images_fixed, onehot_training_labels, testing_images_fixed, onehot_testing_labels)
+    hyp = (1e-3, 64, 512, 1e-3)  # epsilon, batch_size, num_epochs, alpha
     W_tilde = softmax_regression(training_images_fixed, onehot_training_labels, hyp[0], hyp[1], hyp[2], hyp[3])
 
     # get the softmax yhat value using the testing data and the trained weights
