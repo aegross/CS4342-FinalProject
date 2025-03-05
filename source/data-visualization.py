@@ -3,6 +3,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.decomposition import PCA
+from matplotlib.colors import ListedColormap
 
 
 if __name__ == "__main__":
@@ -51,6 +52,7 @@ if __name__ == "__main__":
 
 
     # plot the PCA results
+    CLASS_NAMES = (['butterfly', 'cat', 'chicken', 'cow', 'dog', 'elephant', 'horse', 'sheep', 'spider', 'squirrel'])
     plt.figure(figsize=(8, 6))
     scatter = plt.scatter(X_pca[:, 0], X_pca[:, 1], c=y_subset, cmap='viridis', s=50, alpha=0.7)
     plt.xlabel('Principal Component 1')
@@ -58,4 +60,5 @@ if __name__ == "__main__":
     plt.title('PCA Visualization of Animal Species')
     cbar = plt.colorbar(scatter)
     cbar.set_label('Species Label')
+    cbar.set_ticklabels(CLASS_NAMES)
     plt.show()
