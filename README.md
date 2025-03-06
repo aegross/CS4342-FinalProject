@@ -9,7 +9,9 @@
 Implementation of softmax regression was taken from the third homework from the same course, and altered to work with 
 the dataset used for this project.
 
-### Deep Model: ???
+### Deep Model: 
+The deep learning model is a convolutional neural network (CNN) designed for classifying animal images into 10 categories. It consists of three convolutional blocks with batch normalization, ReLU activation, and max pooling, followed by a fully connected classifier that outputs the predicted class labels. The model is trained using the Adam optimizer with a low learning rate and incorporates techniques like learning rate scheduling, gradient clipping, and early stopping to improve performance and generalization.
+
 ### Final Model: ???
 
 ## Run Instructions:
