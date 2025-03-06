@@ -3,6 +3,7 @@ source/animals10
 animals10/
 cleaned_animals_dataset/
 source/cleaned_animals_dataset
+source/fine_tuned_animal_classifier.pth
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
