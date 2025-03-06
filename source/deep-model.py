@@ -164,11 +164,14 @@ def evaluate(model, dataloader, criterion):
     model.eval()
     class_correct = [0] * num_classes
     class_total = [0] * num_classes
+    running_loss = 0.0
     
     with torch.no_grad():
         for images, labels in dataloader:
             images, labels = images.to(device), labels.to(device)
             outputs = model(images)
+            loss = criterion(outputs, labels)
+            running_loss += loss.item()
             _, predicted = torch.max(outputs.data, 1)
             
             # Per-class accuracy
@@ -187,8 +190,9 @@ def evaluate(model, dataloader, criterion):
     total_correct = sum(class_correct)
     total_samples = sum(class_total)
     overall_accuracy = 100 * total_correct / total_samples
+    test_loss = running_loss / len(dataloader)
     
-    return overall_accuracy
+    return overall_accuracy, test_loss
 
 print("\nStarting training...")
 
@@ -232,10 +236,12 @@ for epoch in range(num_epochs):
     train_accuracies.append(train_accuracy)
     
     # Evaluation phase
-    test_accuracy = evaluate(model, test_loader, criterion)
+    test_accuracy, test_loss = evaluate(model, test_loader, criterion)
     test_accuracies.append(test_accuracy)
+    test_losses.append(test_loss)
     
     print(f'\nEpoch [{epoch+1}/{num_epochs}]')
+    print(f'Training Accuracy: {train_accuracy:.2f}%')
     print(f'Overall Test Accuracy: {test_accuracy:.2f}%')
     
     # Update learning rate scheduler
