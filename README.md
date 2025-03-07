@@ -16,3 +16,6 @@ Our final model takes a pre-trained neural network and augments it to train on o
 
 ## Run Instructions:
 data-cleaning.py is designed to be run once from the source folder as the main set to retrieve the dataset from kaggle. Multiple directories and files will be created; the .npy files are what is referenced by each of the models. 
+Simple Model: simple-model.py
+Deep Model: deep-model.py
+Final Model: final-model-82%.py
